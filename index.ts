@@ -1,8 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import type { ChatCompletionRequestMessage } from "openai";
-import dotenv from "dotenv";
+import "dotenv/config";
 import readline from "readline";
-dotenv.config();
 
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
@@ -17,9 +16,10 @@ const rl = readline.createInterface({
 let memory: ChatCompletionRequestMessage[] = [];
 
 const askQuestion = async () => {
-	rl.question("Enter your message: ", async (message) => {
+	rl.question("You: ", async (message) => {
 		memory.push({ role: "user", content: message });
 		let answer = "";
+		process.stdout.write("Assistant: ");
 		for await (const token of streamChatCompletion()) {
 			answer += token;
 			process.stdout.write(token);
